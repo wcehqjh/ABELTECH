@@ -6,10 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductImage extends Model
 {
-    protected $fillable = ['product_id', 'path', 'order'];
+    protected $fillable = [
+        'product_id',
+        'url',
+        'is_primary'
+    ];
 
-    public function getUrlAttribute(): string
+    protected $casts = [
+        'is_primary' => 'boolean'
+    ];
+
+    public function product()
     {
-        return asset('storage/' . $this->path);
+        return $this->belongsTo(Product::class);
     }
 }

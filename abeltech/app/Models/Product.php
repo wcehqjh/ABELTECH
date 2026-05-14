@@ -3,82 +3,87 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
-    use HasFactory;
-
+    protected $table = 'products';
+    
     protected $fillable = [
-        'name', 'slug', 'category', 'price', 'old_price',
-        'image', 'description', 'full_description',
-        'stock', 'is_new', 'is_promo', 'is_active',
-        'brand', 'specs',
+        'name',
+        'slug',
+        'brand',
+        'category',
+        'description',
+        'full_description',
+        'price',
+        'old_price',
+        'stock',
+        'image',
+        'is_new',
+        'is_promo',
+        'is_active',
+        'meta_title',
+        'meta_description'
     ];
 
     protected $casts = [
-        'specs'    => 'array',
-        'is_new'   => 'boolean',
+        'price' => 'decimal:2',
+        'old_price' => 'decimal:2',
+        'stock' => 'integer',
+        'is_new' => 'boolean',
         'is_promo' => 'boolean',
-        'is_active'=> 'boolean',
+        'is_active' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
     ];
 
-    // Relations
-    public function images()
+    /**
+     * Générer un slug unique
+     */
+    public static function generateSlug($name)
     {
-        return $this->hasMany(ProductImage::class)->orderBy('order');
+        $slug = \Illuminate\Support\Str::slug($name);
+        $count = static::where('slug', 'LIKE', "{$slug}%")->count();
+        
+        return $count ? "{$slug}-{$count}" : $slug;
     }
 
-    // Accessors
-    public function getDiscountPercentAttribute(): int
+    /**
+     * Accesseur pour l'URL de l'image
+     */
+    public function getImageUrlAttribute()
     {
-        if ($this->old_price && $this->old_price > $this->price) {
-            return (int) round((($this->old_price - $this->price) / $this->old_price) * 100);
+        if ($this->image && file_exists(public_path('storage/' . $this->image))) {
+            return asset('storage/' . $this->image);
         }
-        return 0;
+        return asset('assets/images/placeholder.png');
     }
 
-    public function getImageUrlAttribute(): string
+    /**
+     * Relation avec les images de galerie
+     */
+    public function images(): HasMany
     {
-        return $this->image
-            ? asset('storage/' . $this->image)
-            : asset('assets/img/product-placeholder.png');
+        return $this->hasMany(ProductImage::class);
     }
 
-    public function getIsInStockAttribute(): bool
+    /**
+     * Vérifier si le produit est en stock
+     */
+    public function getIsInStockAttribute()
     {
         return $this->stock > 0;
     }
 
-    // Scopes
-    public function scopeActive($query)
+    /**
+     * Calculer le pourcentage de réduction
+     */
+    public function getDiscountPercentAttribute()
     {
-        return $query->where('is_active', true);
-    }
-
-    public function scopeByCategory($query, string $category)
-    {
-        return $category === 'all'
-            ? $query
-            : $query->where('category', $category);
-    }
-
-    public function scopeSearch($query, string $term)
-    {
-        return $query->where(function ($q) use ($term) {
-            $q->where('name', 'like', "%{$term}%")
-              ->orWhere('description', 'like', "%{$term}%")
-              ->orWhere('brand', 'like', "%{$term}%");
-        });
-    }
-
-    // Auto-slug
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($product) {
-            $product->slug = Str::slug($product->name);
-        });
+        if ($this->old_price && $this->old_price > $this->price) {
+            return round((($this->old_price - $this->price) / $this->old_price) * 100);
+        }
+        return 0;
     }
 }

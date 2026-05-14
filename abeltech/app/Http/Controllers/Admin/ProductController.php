@@ -12,96 +12,113 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::latest()->paginate(20);
+        $products = Product::latest()->paginate(10);
         return view('admin.products.index', compact('products'));
     }
 
     public function create()
     {
-        return view('admin.products.create');
+        return view('admin.products.form');
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name'             => 'required|string|max:255',
-            'category'         => 'required|in:laptop,desktop,gaming,console,tv,accessory,component',
-            'price'            => 'required|numeric|min:0',
-            'old_price'        => 'nullable|numeric|min:0',
-            'description'      => 'nullable|string',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'brand' => 'nullable|string|max:100',
+            'category' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'old_price' => 'nullable|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'description' => 'nullable|string',
             'full_description' => 'nullable|string',
-            'stock'            => 'required|integer|min:0',
-            'brand'            => 'nullable|string|max:100',
-            'image'            => 'nullable|image|max:5120',
-            'is_new'           => 'boolean',
-            'is_promo'         => 'boolean',
-            'is_active'        => 'boolean',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'gallery.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'is_new' => 'nullable',
+            'is_promo' => 'nullable',
+            'is_active' => 'nullable',
         ]);
 
+        $product = new Product();
+        $product->name = $validated['name'];
+        $product->slug = Str::slug($validated['name']) . '-' . uniqid();
+        $product->brand = $validated['brand'] ?? null;
+        $product->category = $validated['category'];
+        $product->price = $validated['price'];
+        $product->old_price = $validated['old_price'] ?? null;
+        $product->stock = $validated['stock'];
+        $product->description = $validated['description'] ?? null;
+        $product->full_description = $validated['full_description'] ?? null;
+        $product->is_new = $request->has('is_new');
+        $product->is_promo = $request->has('is_promo');
+        $product->is_active = $request->has('is_active');
+
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('products', 'public');
+            $path = $request->file('image')->store('products', 'public');
+            $product->image = $path;
         }
 
-        $data['slug']     = Str::slug($data['name']);
-        $data['is_new']   = $request->boolean('is_new');
-        $data['is_promo'] = $request->boolean('is_promo');
-        $data['is_active']= $request->boolean('is_active', true);
+        $product->save();
 
-        // Upload galerie
-        $product = Product::create($data);
-
-        if ($request->hasFile('gallery')) {
-            foreach ($request->file('gallery') as $i => $file) {
-                $path = $file->store('products/gallery', 'public');
-                $product->images()->create(['path' => $path, 'order' => $i]);
-            }
-        }
-
-        return redirect()->route('admin.products.index')->with('success', 'Produit créé !');
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Produit créé avec succès !');
     }
 
     public function edit(Product $product)
     {
-        return view('admin.products.edit', compact('product'));
+        return view('admin.products.form', compact('product'));
     }
 
     public function update(Request $request, Product $product)
     {
-        $data = $request->validate([
-            'name'             => 'required|string|max:255',
-            'category'         => 'required|in:laptop,desktop,gaming,console,tv,accessory,component',
-            'price'            => 'required|numeric|min:0',
-            'old_price'        => 'nullable|numeric|min:0',
-            'description'      => 'nullable|string',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'brand' => 'nullable|string|max:100',
+            'category' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'old_price' => 'nullable|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'description' => 'nullable|string',
             'full_description' => 'nullable|string',
-            'stock'            => 'required|integer|min:0',
-            'brand'            => 'nullable|string|max:100',
-            'image'            => 'nullable|image|max:5120',
-            'is_new'           => 'boolean',
-            'is_promo'         => 'boolean',
-            'is_active'        => 'boolean',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'is_new' => 'nullable',
+            'is_promo' => 'nullable',
+            'is_active' => 'nullable',
         ]);
 
+        $product->name = $validated['name'];
+        $product->brand = $validated['brand'] ?? null;
+        $product->category = $validated['category'];
+        $product->price = $validated['price'];
+        $product->old_price = $validated['old_price'] ?? null;
+        $product->stock = $validated['stock'];
+        $product->description = $validated['description'] ?? null;
+        $product->full_description = $validated['full_description'] ?? null;
+        $product->is_new = $request->has('is_new');
+        $product->is_promo = $request->has('is_promo');
+        $product->is_active = $request->has('is_active');
+
         if ($request->hasFile('image')) {
-            if ($product->image) Storage::disk('public')->delete($product->image);
-            $data['image'] = $request->file('image')->store('products', 'public');
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
+            }
+            $product->image = $request->file('image')->store('products', 'public');
         }
 
-        $data['slug']     = Str::slug($data['name']);
-        $data['is_new']   = $request->boolean('is_new');
-        $data['is_promo'] = $request->boolean('is_promo');
-        $data['is_active']= $request->boolean('is_active', true);
+        $product->save();
 
-        $product->update($data);
-        return redirect()->route('admin.products.index')->with('success', 'Produit mis à jour !');
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Produit modifié avec succès !');
     }
 
     public function destroy(Product $product)
     {
-        if ($product->image) Storage::disk('public')->delete($product->image);
-        $product->images->each(fn($img) => Storage::disk('public')->delete($img->path));
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
+        }
         $product->delete();
 
-        return back()->with('success', 'Produit supprimé.');
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Produit supprimé avec succès !');
     }
 }

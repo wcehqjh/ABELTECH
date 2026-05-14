@@ -141,4 +141,431 @@
   .admin-sidebar.open { transform:translateX(0); }
   .admin-main { margin-left:0; }
   .stats-grid { grid-template-columns:1fr 1fr; }
+}/* ============================================
+   ADMIN PRODUCTS FORM - ABELTECH STYLE
+   Create & Edit Products
+   ============================================ */
+
+/* ─────────── ADMIN HEADER ─────────── */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 24px;
+    padding: 0 0 20px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.admin-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #fff, #00d4ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+}
+
+/* ─────────── FORM CARD ─────────── */
+.admin-form-card {
+    background: rgba(18, 20, 27, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 24px;
+    padding: 32px;
+    transition: all 0.3s ease;
+}
+
+.admin-form-card:hover {
+    border-color: rgba(0,212,255,0.3);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+/* ─────────── FORM LABELS ─────────── */
+.form-label-dark {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.3px;
+}
+
+.form-label-dark small {
+    font-size: 10px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.4);
+}
+
+/* ─────────── INPUTS ─────────── */
+.input-dark {
+    width: 100%;
+    background: rgba(10, 12, 16, 0.8);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 12px 16px;
+    color: #fff;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.input-dark:focus {
+    outline: none;
+    border-color: #00d4ff;
+    box-shadow: 0 0 0 3px rgba(0,212,255,0.15);
+    background: rgba(10, 12, 16, 1);
+}
+
+.input-dark.is-invalid,
+.input-dark.error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
+}
+
+.invalid-feedback {
+    display: block;
+    font-size: 11px;
+    color: #ef4444;
+    margin-top: 6px;
+}
+
+/* ─────────── SELECT DROPDOWN ─────────── */
+select.input-dark {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2300d4ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+}
+
+/* ─────────── TEXTAREA ─────────── */
+textarea.input-dark {
+    resize: vertical;
+    min-height: 100px;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+}
+
+/* ─────────── FILE INPUT ─────────── */
+input[type="file"].input-dark {
+    padding: 10px;
+    cursor: pointer;
+}
+
+input[type="file"].input-dark::file-selector-button {
+    background: linear-gradient(135deg, #00d4ff, #7c3aed);
+    border: none;
+    border-radius: 10px;
+    padding: 8px 20px;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 12px;
+    transition: all 0.2s;
+}
+
+input[type="file"].input-dark::file-selector-button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+}
+
+/* ─────────── SWITCH TOGGLE ─────────── */
+.switch-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    user-select: none;
+}
+
+.switch-label input {
+    display: none;
+}
+
+.switch-track {
+    position: relative;
+    width: 48px;
+    height: 24px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.switch-track::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 50%;
+    top: 2px;
+    left: 3px;
+    transition: all 0.3s ease;
+}
+
+.switch-label input:checked + .switch-track {
+    background: linear-gradient(135deg, #00d4ff, #7c3aed);
+}
+
+.switch-label input:checked + .switch-track::before {
+    transform: translateX(22px);
+    background: #fff;
+}
+
+.switch-label:hover .switch-track::before {
+    background: #00d4ff;
+}
+
+.switch-label input:checked + .switch-track::before {
+    background: #fff;
+}
+
+/* ─────────── BUTTONS ─────────── */
+.btn-glow {
+    background: linear-gradient(135deg, #00d4ff, #7c3aed);
+    border: none;
+    padding: 12px 28px;
+    border-radius: 40px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.btn-glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,212,255,0.4);
+    filter: brightness(1.05);
+}
+
+.btn-outline-glow {
+    background: transparent;
+    border: 1.5px solid rgba(0,212,255,0.5);
+    padding: 10px 24px;
+    border-radius: 40px;
+    color: #00d4ff;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.btn-outline-glow:hover {
+    background: rgba(0,212,255,0.1);
+    border-color: #00d4ff;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.btn-danger-glow {
+    background: rgba(239,68,68,0.15);
+    border: 1.5px solid rgba(239,68,68,0.5);
+    padding: 8px 16px;
+    border-radius: 10px;
+    color: #ef4444;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-danger-glow:hover {
+    background: #ef4444;
+    color: #fff;
+}
+
+/* ─────────── IMAGE PREVIEW ─────────── */
+#imgPreview {
+    margin-top: 12px;
+    width: 120px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid rgba(0,212,255,0.3);
+    background: rgba(0,0,0,0.3);
+}
+
+/* ─────────── GRID GALLERY ─────────── */
+.gallery-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.gallery-item {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gallery-item:hover {
+    border-color: #ef4444;
+}
+
+.gallery-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(239,68,68,0.9);
+    border: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ─────────── RESPONSIVE ─────────── */
+@media (max-width: 768px) {
+    .admin-form-card {
+        padding: 20px;
+    }
+    
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .switch-label {
+        margin-bottom: 8px;
+    }
+    
+    .d-flex.gap-4 {
+        gap: 16px !important;
+        flex-direction: column;
+    }
+    
+    .btn-glow,
+    .btn-outline-glow {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ─────────── TOAST NOTIFICATIONS ─────────── */
+.toast-notification {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: rgba(18, 20, 27, 0.95);
+    backdrop-filter: blur(12px);
+    border-left: 4px solid #22c55e;
+    border-radius: 12px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 1100;
+    animation: slideInRight 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.toast-notification.error {
+    border-left-color: #ef4444;
+}
+
+.toast-notification i {
+    font-size: 20px;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ─────────── LOADING STATE ─────────── */
+.loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ─────────── PRODUCT TABLE ACTIONS ─────────── */
+.table-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+/* ─────────── SCROLLBAR ─────────── */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0,212,255,0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0,212,255,0.5);
+}
+
+/* ─────────── ANIMATION FADE IN ─────────── */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.admin-form-card {
+    animation: fadeInUp 0.4s ease-out;
 }
