@@ -21,8 +21,7 @@
         rel="stylesheet">
 
   {{-- CSS principal --}}
-  <link rel="stylesheet" href="{{ asset('assets/css/abeltech-style.css') }}">
-
+<link rel="stylesheet" href="{{ asset('assets/css/abeltech-style.css') }}?ngrok-skip-browser-warning=true">
   <style>
     /* Styles pour l'espace client */
     .dropdown-client {
