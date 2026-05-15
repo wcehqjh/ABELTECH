@@ -39,8 +39,8 @@ class BoutiqueController extends Controller
                 break;
         }
         
-        // Récupérer les produits (Objects, pas Array)
-        $products = $query->paginate(12);
+        // ✅ MODIFICATION: Récupérer TOUS les produits (sans pagination)
+        $products = $query->get();
         
         $categories = [
             'laptop' => '💻 PC Portables',
@@ -53,9 +53,9 @@ class BoutiqueController extends Controller
         ];
         
         return view('boutique', [
-            'products' => $products,  // C'est un objet Paginator avec des objets Product
+            'products' => $products,
             'categories' => $categories,
-            'total' => $products->total(),
+            'total' => $products->count(),  // ✅ count() au lieu de total()
             'currentSearch' => $request->get('q', ''),
             'currentCat' => $request->get('category', ''),
             'currentSort' => $sort,

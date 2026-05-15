@@ -20,10 +20,6 @@
 
     <h1>Notre <span class="text-gradient">Boutique</span></h1>
 
-    <p>
-      PC portables, gaming, TV, consoles et accessoires —
-      tout pour votre setup parfait.
-    </p>
 
     {{-- BARRE DE RECHERCHE --}}
     <form method="GET" action="{{ route('boutique') }}" class="search-bar-wrap mx-auto mt-4">
@@ -173,10 +169,6 @@
         @endforeach
       </div>
 
-      {{-- Pagination --}}
-      <div class="pagination-wrapper mt-5">
-        {{ $products->withQueryString()->links() }}
-      </div>
 
     @else
       <div class="empty-state">
